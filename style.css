@@ -1,0 +1,16 @@
+.container {
+  width: 704px;
+  margin: 0 auto;
+}
+.header {
+  text-align: center;
+  font-size: 30px;
+}
+.textarea {
+  width: 698px;
+  height: 200px;
+}
+.keyboard {
+  border: 3px solid black;
+  padding: 3px 3px 0 0;
+}
