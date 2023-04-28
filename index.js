@@ -48,7 +48,7 @@ const buttons = [
     ["Del", "Del", "Del", "Del", "Delete"],
   ],
   [
-    ["CapsLock", "CapsLock", "CapsLock", "CapsLock", "CapsLock", "CapsLock"],
+    ["CapsLock", "CapsLock", "CapsLock", "CapsLock", "CapsLock"],
     ["A", "a", "Ф", "ф", "KeyA"],
     ["S", "s", "Ы", "ы", "KeyS"],
     ["D", "d", "В", "в", "KeyD"],
@@ -89,11 +89,28 @@ const buttons = [
     ["Ctrl", "Ctrl", "Ctrl", "Ctrl", "ControlRight"],
   ],
 ];
-// for (let i = 0; i < buttons.length; i++) {
-//   for (let j = 0; j < buttons[i].length; j++) {
-//     a.push(buttons[i][j].reverse());
-//   }
-// }
-
-console.log(a);
+for (let i = 0; i < buttons.length; i++) {
+  const row = document.createElement("div");
+  row.classList.add("row");
+  for (let j = 0; j < buttons[i].length; j++) {
+    const btn = document.createElement("div");
+    btn.classList.add("btn");
+    btn.classList.add(`${buttons[i][j][4]}`);
+    btn.innerHTML = `<span class="eng">
+    <span class="loverCase">${buttons[i][j][1]}</span>
+    <span class="upperCase hidden">${buttons[i][j][0]}</span>
+    <span class="capsLock hidden">${buttons[i][j][0]}</span>
+    <span class="shiftCapsLock hidden">${buttons[i][j][1]}</span>
+    </span>
+    <span class="ru">
+     <span class="loverCase hidden">${buttons[i][j][3]}</span>
+    <span class="upperCase hidden">${buttons[i][j][2]}</span>
+    <span class="capsLock hidden">${buttons[i][j][2]}</span>
+    <span class="shiftCapsLock hidden">${buttons[i][j][3]}</span>
+    </span>`;
+    row.append(btn);
+  }
+  keyboard.append(row);
+}
+container.append(keyboard);
 document.body.append(container);
