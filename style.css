@@ -9,6 +9,7 @@
 .textarea {
   width: 698px;
   height: 200px;
+  margin-bottom: 15px;
 }
 .keyboard {
   border: 3px solid black;
@@ -37,6 +38,13 @@
   background: #5e5252;
   border-radius: 3px;
   cursor: pointer;
+  transition: all 100ms ease-in-out;
+}
+.keyboard .active {
+  transition: all 100ms ease-in-out;
+  background: #63e8df;
+  border-radius: 10px;
+  border: 1px solid #63e8df;
 }
 .Backquote,
 .Backspace,
@@ -68,5 +76,13 @@
   width: 50px;
 }
 .Space {
-  width: 330px;
+  width: 313px;
+}
+.footer {
+  text-align: center;
+  font-size: 20px;
+  color: #5e5252;
+}
+.ControlRight {
+  width: 50px;
 }

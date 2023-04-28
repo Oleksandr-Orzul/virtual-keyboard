@@ -113,4 +113,37 @@ for (let i = 0; i < buttons.length; i++) {
   keyboard.append(row);
 }
 container.append(keyboard);
+let footer = document.createElement("footer");
+footer.classList.add("footer");
+footer.innerHTML =
+  "<p>The keyboard was created in the Windows operating system</p><p>To switch the language combination: left ctrl + alt</p>";
+container.append(footer);
 document.body.append(container);
+
+keyboard.addEventListener("mousedown", illuminationKey);
+function illuminationKey(e) {
+  if (e.target.closest(".btn")) {
+    e.target.closest(".btn").classList.add("active");
+  }
+}
+keyboard.addEventListener("mouseup", illuminationKeyOff);
+
+keyboard.addEventListener("mouseout", illuminationKeyOff);
+function illuminationKeyOff(e) {
+  if (e.target.closest(".btn")) {
+    e.target.closest(".btn").classList.remove("active");
+  }
+}
+keyboard.addEventListener("mousedown", typeLetter);
+function typeLetter(e) {
+  if (e.target.closest(".btn")) {
+    textarea.innerHTML += e.srcElement.innerText;
+  }
+}
+document.addEventListener("keydown", pushKey);
+function pushKey(e) {
+  e.preventDefault();
+  console.log(e.code);
+  let a = document.querySelector(`.${e.code}`);
+  textarea.innerHTML += a.innerText;
+}
