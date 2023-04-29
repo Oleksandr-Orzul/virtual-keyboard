@@ -146,4 +146,10 @@ function pushKey(e) {
   console.log(e.code);
   let a = document.querySelector(`.${e.code}`);
   textarea.innerHTML += a.innerText;
+  a.classList.add("active");
+}
+document.addEventListener("keyup", unPushKey);
+function unPushKey(e) {
+  let a = document.querySelector(`.${e.code}`);
+  a.classList.remove("active");
 }
