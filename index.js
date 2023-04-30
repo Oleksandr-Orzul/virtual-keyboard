@@ -13,6 +13,27 @@ container.append(textarea);
 let keyboard = document.createElement("div");
 keyboard.classList.add("keyboard");
 
+let language = localStorage.getItem("language") || "eng";
+
+window.addEventListener("unload", function () {
+  localStorage.setItem("language", `${language}`);
+});
+const funcButtons = [
+  "Backspace",
+  "Tab",
+  "Delete",
+  "CapsLock",
+  "ShiftLeft",
+  "Enter",
+  "ControlLeft",
+  "ControlRight",
+  "ControlLeft",
+  "MetaLeft",
+  "AltLeft",
+  "AltRight",
+  "ControlRight",
+  "ShiftRight",
+];
 const buttons = [
   [
     ["~", "`", "Ё", "ё", "Backquote"],
@@ -89,26 +110,38 @@ const buttons = [
     ["Ctrl", "Ctrl", "Ctrl", "Ctrl", "ControlRight"],
   ],
 ];
+
 for (let i = 0; i < buttons.length; i++) {
   const row = document.createElement("div");
   row.classList.add("row");
   for (let j = 0; j < buttons[i].length; j++) {
-    const btn = document.createElement("div");
-    btn.classList.add("btn");
-    btn.classList.add(`${buttons[i][j][4]}`);
-    btn.innerHTML = `<span class="eng">
+    if (language === "eng") {
+      const btn = document.createElement("div");
+      btn.classList.add("btn");
+      btn.classList.add(`${buttons[i][j][4]}`);
+      btn.innerHTML = `<span class="eng">
     <span class="loverCase">${buttons[i][j][1]}</span>
     <span class="upperCase hidden">${buttons[i][j][0]}</span>
-    <span class="capsLock hidden">${buttons[i][j][0]}</span>
-    <span class="shiftCapsLock hidden">${buttons[i][j][1]}</span>
     </span>
     <span class="ru">
      <span class="loverCase hidden">${buttons[i][j][3]}</span>
     <span class="upperCase hidden">${buttons[i][j][2]}</span>
-    <span class="capsLock hidden">${buttons[i][j][2]}</span>
-    <span class="shiftCapsLock hidden">${buttons[i][j][3]}</span>
     </span>`;
-    row.append(btn);
+      row.append(btn);
+    } else {
+      const btn = document.createElement("div");
+      btn.classList.add("btn");
+      btn.classList.add(`${buttons[i][j][4]}`);
+      btn.innerHTML = `<span class="eng">
+    <span class="loverCase hidden">${buttons[i][j][1]}</span>
+    <span class="upperCase hidden">${buttons[i][j][0]}</span>
+    </span>
+    <span class="ru">
+     <span class="loverCase">${buttons[i][j][3]}</span>
+    <span class="upperCase hidden">${buttons[i][j][2]}</span>
+     </span>`;
+      row.append(btn);
+    }
   }
   keyboard.append(row);
 }
@@ -120,11 +153,15 @@ footer.innerHTML =
 container.append(footer);
 document.body.append(container);
 
+let caps = "";
+let ShiftLeft = document.querySelector(".ShiftLeft");
+let ShiftRight = document.querySelector(".ShiftRight");
 keyboard.addEventListener("mousedown", illuminationKey);
 function illuminationKey(e) {
   if (e.target.closest(".btn")) {
     e.target.closest(".btn").classList.add("active");
   }
+  changeLanguage();
 }
 keyboard.addEventListener("mouseup", illuminationKeyOff);
 
@@ -136,18 +173,126 @@ function illuminationKeyOff(e) {
 }
 keyboard.addEventListener("mousedown", typeLetter);
 function typeLetter(e) {
+  console.log();
   if (e.target.closest(".btn")) {
-    textarea.innerHTML += e.srcElement.innerText;
+    if (funcButtons.indexOf(e.target.closest(".btn").classList[1]) === -1) {
+      textarea.innerHTML += e.srcElement.innerText;
+    }
   }
 }
 document.addEventListener("keydown", pushKey);
 function pushKey(e) {
   e.preventDefault();
-  console.log(e.code);
   let a = document.querySelector(`.${e.code}`);
-  textarea.innerHTML += a.innerText;
+  if (funcButtons.indexOf(a.classList[1]) === -1) {
+    textarea.innerHTML += a.innerText;
+  }
   a.classList.add("active");
+  changeLanguage();
 }
+function changeLanguage() {
+  let lctrl = document.querySelector(".ControlLeft");
+  let lalt = document.querySelector(".AltLeft");
+  if (lctrl.classList.contains("active") && lalt.classList.contains("active")) {
+    if (language === "eng") {
+      language = "rus";
+      setLanguageToRus();
+    } else {
+      language = "eng";
+      setLanguageToEng();
+    }
+    localStorage.setItem("language", `${language}`);
+  }
+}
+function setLanguageToRus() {
+  let keys = document.querySelectorAll(".btn");
+
+  if (
+    caps &&
+    (ShiftLeft.classList.contains("active") ||
+      ShiftRight.classList.contains("active"))
+  ) {
+    keys.forEach((a) => {
+      a.children[0].children[0].classList.remove("hidden");
+      a.children[0].children[1].classList.remove("hidden");
+      a.children[1].children[0].classList.remove("hidden");
+      a.children[1].children[1].classList.remove("hidden");
+      a.children[0].children[0].classList.add("hidden");
+      a.children[0].children[1].classList.add("hidden");
+      a.children[1].children[1].classList.add("hidden");
+    });
+    let keys = document.querySelectorAll(".btn");
+  } else if (
+    caps ||
+    ShiftLeft.classList.contains("active") ||
+    ShiftRight.classList.contains("active")
+  ) {
+    keys.forEach((a) => {
+      a.children[0].children[0].classList.remove("hidden");
+      a.children[0].children[1].classList.remove("hidden");
+      a.children[1].children[0].classList.remove("hidden");
+      a.children[1].children[1].classList.remove("hidden");
+      a.children[0].children[0].classList.add("hidden");
+      a.children[0].children[1].classList.add("hidden");
+      a.children[1].children[0].classList.add("hidden");
+    });
+  } else {
+    keys.forEach((a) => {
+      a.children[0].children[0].classList.remove("hidden");
+      a.children[0].children[1].classList.remove("hidden");
+      a.children[1].children[0].classList.remove("hidden");
+      a.children[1].children[1].classList.remove("hidden");
+      a.children[0].children[0].classList.add("hidden");
+      a.children[0].children[1].classList.add("hidden");
+      a.children[1].children[1].classList.add("hidden");
+    });
+  }
+}
+function setLanguageToEng() {
+  let keys = document.querySelectorAll(".btn");
+
+  if (
+    caps &&
+    (ShiftLeft.classList.contains("active") ||
+      ShiftRight.classList.contains("active"))
+  ) {
+    keys.forEach((a) => {
+      a.children[0].children[0].classList.remove("hidden");
+      a.children[0].children[1].classList.remove("hidden");
+      a.children[1].children[0].classList.remove("hidden");
+      a.children[1].children[1].classList.remove("hidden");
+      a.children[0].children[1].classList.add("hidden");
+      a.children[1].children[0].classList.add("hidden");
+      a.children[1].children[1].classList.add("hidden");
+    });
+    let keys = document.querySelectorAll(".btn");
+  } else if (
+    caps ||
+    ShiftLeft.classList.contains("active") ||
+    ShiftRight.classList.contains("active")
+  ) {
+    keys.forEach((a) => {
+      a.children[0].children[0].classList.remove("hidden");
+      a.children[0].children[1].classList.remove("hidden");
+      a.children[1].children[0].classList.remove("hidden");
+      a.children[1].children[1].classList.remove("hidden");
+      a.children[0].children[0].classList.add("hidden");
+      a.children[1].children[0].classList.add("hidden");
+      a.children[1].children[1].classList.add("hidden");
+    });
+  } else {
+    keys.forEach((a) => {
+      a.children[0].children[0].classList.remove("hidden");
+      a.children[0].children[1].classList.remove("hidden");
+      a.children[1].children[0].classList.remove("hidden");
+      a.children[1].children[1].classList.remove("hidden");
+      a.children[0].children[1].classList.add("hidden");
+      a.children[1].children[0].classList.add("hidden");
+      a.children[1].children[1].classList.add("hidden");
+    });
+  }
+}
+
 document.addEventListener("keyup", unPushKey);
 function unPushKey(e) {
   let a = document.querySelector(`.${e.code}`);
