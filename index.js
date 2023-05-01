@@ -19,21 +19,24 @@ window.addEventListener("unload", function () {
   localStorage.setItem("language", `${language}`);
 });
 const funcButtons = [
+  "ControlLeft",
+  "AltLeft",
   "Backspace",
   "Tab",
   "Delete",
   "CapsLock",
   "ShiftLeft",
   "Enter",
-  "ControlLeft",
+
   "ControlRight",
-  "ControlLeft",
   "MetaLeft",
   "AltLeft",
   "AltRight",
   "ControlRight",
   "ShiftRight",
 ];
+let [CtrlL, AltL] = funcButtons;
+
 const buttons = [
   [
     ["~", "`", "Ё", "ё", "Backquote"],
@@ -146,48 +149,153 @@ for (let i = 0; i < buttons.length; i++) {
   keyboard.append(row);
 }
 container.append(keyboard);
+
 let footer = document.createElement("footer");
 footer.classList.add("footer");
 footer.innerHTML =
-  "<p>The keyboard was created in the Windows operating system</p><p>To switch the language combination: left ctrl + alt</p>";
+  "<p>The keyboard was created in the Windows operating system</p><p>To switch the language combination: left ctrl + left alt</p>";
 container.append(footer);
 document.body.append(container);
 
 let caps = "";
+let active;
 
 keyboard.addEventListener("mousedown", illuminationKey);
-
-keyboard.addEventListener("mouseup", illuminationKeyOff);
-
-keyboard.addEventListener("mouseout", illuminationKeyOff);
-function illuminationKeyOff(e) {
+keyboard.addEventListener("mouseup", (e) => {
   if (e.target.closest(".btn")) {
     e.target.closest(".btn").classList.remove("active");
   }
+  changeLanguage();
+});
+document.addEventListener("mouseup", () => {
+  if (active) {
+    active.classList.remove("active");
+  }
+  changeLanguage();
+});
 
+function illuminationKey(e) {
+  if (e.target.closest(".btn")) {
+    e.target.closest(".btn").classList.add("active");
+    active = e.target.closest(".btn");
+  }
+  if (e.target.closest(".btn").classList.contains("CapsLock")) {
+    changeCaps();
+  }
   changeLanguage();
 }
 keyboard.addEventListener("mousedown", typeLetter);
 function typeLetter(e) {
   if (e.target.closest(".btn")) {
+    let cursorPosition = textarea.selectionStart;
     if (funcButtons.indexOf(e.target.closest(".btn").classList[1]) === -1) {
-      textarea.innerHTML += e.srcElement.innerText;
+      textarea.innerHTML =
+        textarea.value.slice(0, cursorPosition) +
+        e.srcElement.innerText +
+        textarea.value.slice(cursorPosition);
+      textarea.selectionStart = cursorPosition + 1;
+    }
+    if (e.target.closest(".btn").classList[1] === "Backspace") {
+      if (cursorPosition !== 0) {
+        textarea.innerHTML =
+          textarea.value.slice(0, cursorPosition - 1) +
+          textarea.value.slice(cursorPosition);
+        textarea.selectionStart = cursorPosition - 1;
+      }
+    }
+    if (e.target.closest(".btn").classList[1] === "Space") {
+      textarea.innerHTML =
+        textarea.value.slice(0, cursorPosition) +
+        " " +
+        textarea.value.slice(cursorPosition);
+      textarea.selectionStart = cursorPosition + 1;
+    }
+    if (e.target.closest(".btn").classList[1] === "Tab") {
+      textarea.innerHTML =
+        textarea.value.slice(0, cursorPosition) +
+        "    " +
+        textarea.value.slice(cursorPosition);
+      textarea.selectionStart = cursorPosition + 4;
+    }
+    if (e.target.closest(".btn").classList[1] === "Enter") {
+      textarea.innerHTML =
+        textarea.value.slice(0, cursorPosition) +
+        `\n` +
+        textarea.value.slice(cursorPosition);
+      textarea.selectionStart = cursorPosition + 1;
+    }
+    if (e.target.closest(".btn").classList[1] === "Delete") {
+      if (cursorPosition !== textarea.value.length) {
+        textarea.innerHTML =
+          textarea.value.slice(0, cursorPosition) +
+          textarea.value.slice(cursorPosition + 1);
+        textarea.selectionStart = cursorPosition;
+      }
     }
   }
 }
+
 document.addEventListener("keydown", pushKey);
 function pushKey(e) {
   e.preventDefault();
-  let a = document.querySelector(`.${e.code}`);
-  if (funcButtons.indexOf(a.classList[1]) === -1) {
-    textarea.innerHTML += a.innerText;
+  let activeBtn = document.querySelector(`.${e.code}`);
+  let cursorPosition = textarea.selectionStart;
+  if (funcButtons.indexOf(activeBtn.classList[1]) === -1) {
+    textarea.innerHTML =
+      textarea.value.slice(0, cursorPosition) +
+      activeBtn.innerText +
+      textarea.value.slice(cursorPosition);
+    textarea.selectionStart = cursorPosition + 1;
   }
-  a.classList.add("active");
-  if (a.classList.contains("CapsLock")) {
+  if (activeBtn.classList[1] === "Backspace") {
+    if (cursorPosition !== 0) {
+      textarea.innerHTML =
+        textarea.value.slice(0, cursorPosition - 1) +
+        textarea.value.slice(cursorPosition);
+      textarea.selectionStart = cursorPosition - 1;
+    }
+  }
+
+  if (activeBtn.classList[1] === "Space") {
+    textarea.innerHTML =
+      textarea.value.slice(0, cursorPosition) +
+      " " +
+      textarea.value.slice(cursorPosition);
+    textarea.selectionStart = cursorPosition + 1;
+  }
+  if (activeBtn.classList[1] === "Tab") {
+    textarea.innerHTML =
+      textarea.value.slice(0, cursorPosition) +
+      "    " +
+      textarea.value.slice(cursorPosition);
+    textarea.selectionStart = cursorPosition + 4;
+  }
+  if (activeBtn.classList[1] === "Enter") {
+    textarea.innerHTML =
+      textarea.value.slice(0, cursorPosition) +
+      `\n` +
+      textarea.value.slice(cursorPosition);
+    textarea.selectionStart = cursorPosition + 1;
+  }
+  if (activeBtn.classList[1] === "Delete") {
+    if (cursorPosition !== textarea.value.length) {
+      textarea.innerHTML =
+        textarea.value.slice(0, cursorPosition) +
+        textarea.value.slice(cursorPosition + 1);
+      textarea.selectionStart = cursorPosition;
+    }
+  }
+  activeBtn.classList.add("active");
+  if (activeBtn.classList.contains("CapsLock")) {
     changeCaps();
   }
   changeLanguage();
 }
+document.addEventListener("keyup", (e) => {
+  let a = document.querySelector(`.${e.code}`);
+  a.classList.remove("active");
+  changeLanguage();
+});
 function changeCaps() {
   if (caps === "1") {
     caps = "";
@@ -195,10 +303,14 @@ function changeCaps() {
     caps = "1";
   }
 }
+
 function changeLanguage() {
-  let lctrl = document.querySelector(".ControlLeft");
-  let lalt = document.querySelector(".AltLeft");
-  if (lctrl.classList.contains("active") && lalt.classList.contains("active")) {
+  let controlLeft = document.querySelector(`.${CtrlL}`);
+  let altLeft = document.querySelector(`.${AltL}`);
+  if (
+    controlLeft.classList.contains("active") &&
+    altLeft.classList.contains("active")
+  ) {
     if (language === "eng") {
       language = "rus";
       setLanguageToRus();
@@ -216,7 +328,6 @@ function changeLanguage() {
 }
 let ShiftLeft = document.querySelector(".ShiftLeft");
 let ShiftRight = document.querySelector(".ShiftRight");
-
 function setLanguageToRus() {
   let keys = document.getElementsByClassName("btn");
   if (
@@ -279,7 +390,6 @@ function setLanguageToEng() {
       keys[i].children[1].children[0].classList.add("hidden");
       keys[i].children[1].children[1].classList.add("hidden");
     }
-    let keys = document.querySelectorAll(".btn");
   } else if (
     caps ||
     ShiftLeft.classList.contains("active") ||
@@ -309,20 +419,4 @@ function setLanguageToEng() {
     let a = document.querySelector(".CapsLock");
     a.classList.add("active");
   }
-}
-
-document.addEventListener("keyup", unPushKey);
-function unPushKey(e) {
-  let a = document.querySelector(`.${e.code}`);
-  a.classList.remove("active");
-  changeLanguage();
-}
-function illuminationKey(e) {
-  if (e.target.closest(".btn")) {
-    e.target.closest(".btn").classList.add("active");
-  }
-  if (e.target.closest(".btn").classList.contains("CapsLock")) {
-    changeCaps();
-  }
-  changeLanguage();
 }
