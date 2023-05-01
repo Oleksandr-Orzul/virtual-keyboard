@@ -40,6 +40,10 @@
   cursor: pointer;
   transition: all 100ms ease-in-out;
 }
+.btn:hover {
+  background: #967e7e;
+  transition: all 100ms ease-in-out;
+}
 .keyboard .active {
   transition: all 100ms ease-in-out;
   background: #63e8df;

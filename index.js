@@ -154,15 +154,9 @@ container.append(footer);
 document.body.append(container);
 
 let caps = "";
-let ShiftLeft = document.querySelector(".ShiftLeft");
-let ShiftRight = document.querySelector(".ShiftRight");
+
 keyboard.addEventListener("mousedown", illuminationKey);
-function illuminationKey(e) {
-  if (e.target.closest(".btn")) {
-    e.target.closest(".btn").classList.add("active");
-  }
-  changeLanguage();
-}
+
 keyboard.addEventListener("mouseup", illuminationKeyOff);
 
 keyboard.addEventListener("mouseout", illuminationKeyOff);
@@ -170,10 +164,11 @@ function illuminationKeyOff(e) {
   if (e.target.closest(".btn")) {
     e.target.closest(".btn").classList.remove("active");
   }
+
+  changeLanguage();
 }
 keyboard.addEventListener("mousedown", typeLetter);
 function typeLetter(e) {
-  console.log();
   if (e.target.closest(".btn")) {
     if (funcButtons.indexOf(e.target.closest(".btn").classList[1]) === -1) {
       textarea.innerHTML += e.srcElement.innerText;
@@ -188,7 +183,17 @@ function pushKey(e) {
     textarea.innerHTML += a.innerText;
   }
   a.classList.add("active");
+  if (a.classList.contains("CapsLock")) {
+    changeCaps();
+  }
   changeLanguage();
+}
+function changeCaps() {
+  if (caps === "1") {
+    caps = "";
+  } else {
+    caps = "1";
+  }
 }
 function changeLanguage() {
   let lctrl = document.querySelector(".ControlLeft");
@@ -203,93 +208,106 @@ function changeLanguage() {
     }
     localStorage.setItem("language", `${language}`);
   }
+  if (language === "eng") {
+    setLanguageToEng();
+  } else {
+    setLanguageToRus();
+  }
 }
-function setLanguageToRus() {
-  let keys = document.querySelectorAll(".btn");
+let ShiftLeft = document.querySelector(".ShiftLeft");
+let ShiftRight = document.querySelector(".ShiftRight");
 
+function setLanguageToRus() {
+  let keys = document.getElementsByClassName("btn");
   if (
     caps &&
     (ShiftLeft.classList.contains("active") ||
       ShiftRight.classList.contains("active"))
-  ) {
-    keys.forEach((a) => {
-      a.children[0].children[0].classList.remove("hidden");
-      a.children[0].children[1].classList.remove("hidden");
-      a.children[1].children[0].classList.remove("hidden");
-      a.children[1].children[1].classList.remove("hidden");
-      a.children[0].children[0].classList.add("hidden");
-      a.children[0].children[1].classList.add("hidden");
-      a.children[1].children[1].classList.add("hidden");
-    });
-    let keys = document.querySelectorAll(".btn");
-  } else if (
+  )
+    for (let i = 0; i < keys.length; i++) {
+      keys[i].children[0].children[0].classList.remove("hidden");
+      keys[i].children[0].children[1].classList.remove("hidden");
+      keys[i].children[1].children[0].classList.remove("hidden");
+      keys[i].children[1].children[1].classList.remove("hidden");
+      keys[i].children[0].children[0].classList.add("hidden");
+      keys[i].children[0].children[1].classList.add("hidden");
+      keys[i].children[1].children[1].classList.add("hidden");
+    }
+  else if (
     caps ||
     ShiftLeft.classList.contains("active") ||
     ShiftRight.classList.contains("active")
   ) {
-    keys.forEach((a) => {
-      a.children[0].children[0].classList.remove("hidden");
-      a.children[0].children[1].classList.remove("hidden");
-      a.children[1].children[0].classList.remove("hidden");
-      a.children[1].children[1].classList.remove("hidden");
-      a.children[0].children[0].classList.add("hidden");
-      a.children[0].children[1].classList.add("hidden");
-      a.children[1].children[0].classList.add("hidden");
-    });
+    for (let i = 0; i < keys.length; i++) {
+      keys[i].children[0].children[0].classList.remove("hidden");
+      keys[i].children[0].children[1].classList.remove("hidden");
+      keys[i].children[1].children[0].classList.remove("hidden");
+      keys[i].children[1].children[1].classList.remove("hidden");
+      keys[i].children[0].children[0].classList.add("hidden");
+      keys[i].children[0].children[1].classList.add("hidden");
+      keys[i].children[1].children[0].classList.add("hidden");
+    }
   } else {
-    keys.forEach((a) => {
-      a.children[0].children[0].classList.remove("hidden");
-      a.children[0].children[1].classList.remove("hidden");
-      a.children[1].children[0].classList.remove("hidden");
-      a.children[1].children[1].classList.remove("hidden");
-      a.children[0].children[0].classList.add("hidden");
-      a.children[0].children[1].classList.add("hidden");
-      a.children[1].children[1].classList.add("hidden");
-    });
+    for (let i = 0; i < keys.length; i++) {
+      keys[i].children[0].children[0].classList.remove("hidden");
+      keys[i].children[0].children[1].classList.remove("hidden");
+      keys[i].children[1].children[0].classList.remove("hidden");
+      keys[i].children[1].children[1].classList.remove("hidden");
+      keys[i].children[0].children[0].classList.add("hidden");
+      keys[i].children[0].children[1].classList.add("hidden");
+      keys[i].children[1].children[1].classList.add("hidden");
+    }
+  }
+  if (caps) {
+    let a = document.querySelector(".CapsLock");
+    a.classList.add("active");
   }
 }
 function setLanguageToEng() {
-  let keys = document.querySelectorAll(".btn");
-
+  let keys = document.getElementsByClassName("btn");
   if (
     caps &&
     (ShiftLeft.classList.contains("active") ||
       ShiftRight.classList.contains("active"))
   ) {
-    keys.forEach((a) => {
-      a.children[0].children[0].classList.remove("hidden");
-      a.children[0].children[1].classList.remove("hidden");
-      a.children[1].children[0].classList.remove("hidden");
-      a.children[1].children[1].classList.remove("hidden");
-      a.children[0].children[1].classList.add("hidden");
-      a.children[1].children[0].classList.add("hidden");
-      a.children[1].children[1].classList.add("hidden");
-    });
+    for (let i = 0; i < keys.length; i++) {
+      keys[i].children[0].children[0].classList.remove("hidden");
+      keys[i].children[0].children[1].classList.remove("hidden");
+      keys[i].children[1].children[0].classList.remove("hidden");
+      keys[i].children[1].children[1].classList.remove("hidden");
+      keys[i].children[0].children[1].classList.add("hidden");
+      keys[i].children[1].children[0].classList.add("hidden");
+      keys[i].children[1].children[1].classList.add("hidden");
+    }
     let keys = document.querySelectorAll(".btn");
   } else if (
     caps ||
     ShiftLeft.classList.contains("active") ||
     ShiftRight.classList.contains("active")
   ) {
-    keys.forEach((a) => {
-      a.children[0].children[0].classList.remove("hidden");
-      a.children[0].children[1].classList.remove("hidden");
-      a.children[1].children[0].classList.remove("hidden");
-      a.children[1].children[1].classList.remove("hidden");
-      a.children[0].children[0].classList.add("hidden");
-      a.children[1].children[0].classList.add("hidden");
-      a.children[1].children[1].classList.add("hidden");
-    });
+    for (let i = 0; i < keys.length; i++) {
+      keys[i].children[0].children[0].classList.remove("hidden");
+      keys[i].children[0].children[1].classList.remove("hidden");
+      keys[i].children[1].children[0].classList.remove("hidden");
+      keys[i].children[1].children[1].classList.remove("hidden");
+      keys[i].children[0].children[0].classList.add("hidden");
+      keys[i].children[1].children[0].classList.add("hidden");
+      keys[i].children[1].children[1].classList.add("hidden");
+    }
   } else {
-    keys.forEach((a) => {
-      a.children[0].children[0].classList.remove("hidden");
-      a.children[0].children[1].classList.remove("hidden");
-      a.children[1].children[0].classList.remove("hidden");
-      a.children[1].children[1].classList.remove("hidden");
-      a.children[0].children[1].classList.add("hidden");
-      a.children[1].children[0].classList.add("hidden");
-      a.children[1].children[1].classList.add("hidden");
-    });
+    for (let i = 0; i < keys.length; i++) {
+      keys[i].children[0].children[0].classList.remove("hidden");
+      keys[i].children[0].children[1].classList.remove("hidden");
+      keys[i].children[1].children[0].classList.remove("hidden");
+      keys[i].children[1].children[1].classList.remove("hidden");
+      keys[i].children[0].children[1].classList.add("hidden");
+      keys[i].children[1].children[0].classList.add("hidden");
+      keys[i].children[1].children[1].classList.add("hidden");
+    }
+  }
+  if (caps) {
+    let a = document.querySelector(".CapsLock");
+    a.classList.add("active");
   }
 }
 
@@ -297,4 +315,14 @@ document.addEventListener("keyup", unPushKey);
 function unPushKey(e) {
   let a = document.querySelector(`.${e.code}`);
   a.classList.remove("active");
+  changeLanguage();
+}
+function illuminationKey(e) {
+  if (e.target.closest(".btn")) {
+    e.target.closest(".btn").classList.add("active");
+  }
+  if (e.target.closest(".btn").classList.contains("CapsLock")) {
+    changeCaps();
+  }
+  changeLanguage();
 }
